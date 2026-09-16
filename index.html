@@ -297,26 +297,63 @@
   .contact-person-row input:first-child { flex: 0.8; }
 
   /* 위시리스트 */
-  .wish-card { background: var(--card); border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; }
-  .wish-row { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-top: 1px solid var(--line); }
-  .wish-row:first-child { border-top: none; }
-  .wish-cat {
-    border: 1px solid var(--line); border-radius: 8px; background: var(--bg);
-    font-size: 12.5px; font-family: inherit; color: var(--ink); padding: 6px 4px; flex-shrink: 0; width: 78px; outline: none;
+  .wish-groups { margin-bottom: 14px; }
+  .wish-group { background: var(--card); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+  .wish-group-head {
+    display: flex; align-items: center; gap: 8px; padding: 12px 16px;
+    font-size: 13px; font-weight: 700; color: var(--sub);
   }
-  .wish-text {
-    flex: 1; border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px;
-    font-size: 14px; font-family: inherit; color: var(--ink); background: var(--bg); outline: none; min-width: 0;
+  .wish-group-head .wg-icon { font-size: 15px; }
+  .wish-group-head .wg-count { margin-left: auto; font-size: 11.5px; color: var(--sub); font-weight: 600; }
+  .wish-item-row {
+    display: flex; align-items: center; gap: 10px; padding: 11px 16px;
+    border-top: 1px solid var(--line);
   }
-  .wish-text:focus, .wish-cat:focus { border-color: var(--blue); }
-  .wish-del { background: none; border: none; color: #d2d2d7; font-size: 16px; cursor: pointer; padding: 4px 6px; flex-shrink: 0; }
+  .wish-item-row .wi-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+  .wish-item-row .wi-text { flex: 1; font-size: 14.5px; line-height: 1.4; }
+  .wish-item-row .wi-by { font-size: 11px; color: var(--sub); flex-shrink: 0; }
+  .wish-del { background: none; border: none; color: #d2d2d7; font-size: 15px; cursor: pointer; padding: 2px 4px; flex-shrink: 0; }
   .wish-del:hover { color: var(--red); }
+
+  .wish-empty { text-align: center; color: var(--sub); font-size: 13.5px; padding: 28px 20px; background: var(--card); border-radius: var(--radius); margin-bottom: 14px; }
+
   .add-wish-btn {
     display: flex; align-items: center; justify-content: center; gap: 6px;
     width: 100%; background: var(--card); border: 1.5px dashed var(--line);
     border-radius: var(--radius); padding: 14px; font-size: 13.5px; font-weight: 600;
     color: var(--blue); font-family: inherit; cursor: pointer;
   }
+
+  /* 위시리스트 추가 폼 (오버레이) */
+  .wish-form-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 1000;
+    display: none; align-items: flex-end; justify-content: center;
+  }
+  .wish-form-backdrop.open { display: flex; }
+  .wish-form-sheet {
+    background: var(--card); border-radius: 20px 20px 0 0; padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+    width: 100%; max-width: 480px;
+  }
+  .wish-form-sheet h3 { font-size: 16px; font-weight: 700; margin: 0 0 14px; }
+  .wish-cat-pills { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .wish-cat-pill {
+    border: 1.5px solid var(--line); border-radius: 20px; padding: 8px 14px;
+    font-size: 13px; font-family: inherit; background: var(--bg); color: var(--sub); cursor: pointer;
+  }
+  .wish-cat-pill.selected { border-color: var(--blue); background: var(--blue-soft); color: var(--blue); font-weight: 700; }
+  .wish-form-input {
+    width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px;
+    font-size: 15px; font-family: inherit; color: var(--ink); background: var(--bg); outline: none;
+    margin-bottom: 14px; box-sizing: border-box;
+  }
+  .wish-form-input:focus { border-color: var(--blue); }
+  .wish-form-actions { display: flex; gap: 8px; }
+  .wish-form-actions button {
+    flex: 1; border: none; border-radius: 10px; padding: 12px 0; font-size: 14.5px;
+    font-weight: 700; font-family: inherit; cursor: pointer;
+  }
+  .wish-form-cancel { background: var(--bg); color: var(--sub); }
+  .wish-form-submit { background: var(--blue); color: white; }
 
   /* 예산 한도 */
   .budget-card { background: var(--card); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 20px; }
@@ -390,11 +427,48 @@
     background: var(--bg); outline: none; resize: vertical; box-sizing: border-box;
   }
   .backup-textarea:focus { border-color: var(--blue); }
+
+  /* 실시간 정보: 날씨 / 환율 */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  @media (max-width: 480px) { .info-grid { grid-template-columns: 1fr; } }
+
+  .weather-card { background: linear-gradient(135deg, #4facfe 0%, #00c6ff 100%); border-radius: var(--radius); padding: 18px 20px; color: white; }
+  .weather-card .w-title { font-size: 12.5px; opacity: 0.9; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .weather-card .w-main { display: flex; align-items: center; gap: 10px; }
+  .weather-card .w-emoji { font-size: 34px; line-height: 1; }
+  .weather-card .w-temp { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+  .weather-card .w-desc { font-size: 12.5px; opacity: 0.9; margin-top: 2px; }
+  .weather-card .w-range { font-size: 12px; opacity: 0.85; margin-top: 10px; }
+  .weather-card .w-loading { font-size: 13px; opacity: 0.85; }
+
+  .fx-card { background: var(--card); border-radius: var(--radius); padding: 18px 20px; }
+  .fx-card .fx-title { font-size: 12.5px; color: var(--sub); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .fx-rate { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
+  .fx-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+  .fx-row input {
+    flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 8px; padding: 8px 9px;
+    font-size: 14px; font-family: inherit; color: var(--ink); background: var(--bg); outline: none; text-align: right;
+  }
+  .fx-row input:focus { border-color: var(--blue); }
+  .fx-row .fx-unit { font-size: 12.5px; color: var(--sub); width: 34px; flex-shrink: 0; }
+  .fx-note { font-size: 11px; color: var(--sub); margin-top: 2px; }
 </style>
 </head>
 <body>
 
 <div class="toast" id="toast"></div>
+
+<div class="wish-form-backdrop" id="wishFormBackdrop">
+  <div class="wish-form-sheet">
+    <h3>위시리스트 추가</h3>
+    <div class="wish-cat-pills" id="wishCatPills"></div>
+    <input class="wish-form-input" id="wishFormInput" type="text" placeholder="예: 디즈니랜드, 샤오롱바오">
+    <div class="wish-form-actions">
+      <button class="wish-form-cancel" id="wishFormCancel">취소</button>
+      <button class="wish-form-submit" id="wishFormSubmit">추가</button>
+    </div>
+  </div>
+</div>
 
 <div class="wrap">
   <div class="hero">
@@ -417,6 +491,26 @@
 
   <!-- 준비 탭 -->
   <div class="tab-page active" id="page-prep">
+
+    <div class="info-grid">
+      <div class="weather-card" id="weatherCard">
+        <div class="w-title">🌤️ 상하이 날씨</div>
+        <div class="w-loading">불러오는 중...</div>
+      </div>
+      <div class="fx-card">
+        <div class="fx-title">💱 환율 계산기</div>
+        <div class="fx-rate" id="fxRateText">환율 불러오는 중...</div>
+        <div class="fx-row">
+          <input type="number" id="fxCny" placeholder="0" inputmode="decimal">
+          <span class="fx-unit">위안</span>
+        </div>
+        <div class="fx-row">
+          <input type="number" id="fxKrw" placeholder="0" inputmode="decimal">
+          <span class="fx-unit">원</span>
+        </div>
+        <div class="fx-note">참고용이에요. 실제 환전은 은행/앱 환율과 다를 수 있어요.</div>
+      </div>
+    </div>
 
     <div class="progress-card">
       <div class="progress-ring">
@@ -481,7 +575,7 @@
   <!-- 일정 탭 -->
   <div class="tab-page" id="page-itinerary">
     <div class="section-title">위시리스트</div>
-    <div class="wish-card" id="wishWrap"></div>
+    <div id="wishGroups"></div>
     <button class="add-wish-btn" id="addWishBtn" style="margin-bottom:28px;">+ 위시리스트 추가</button>
 
     <div class="section-title">일차별 일정</div>
@@ -1348,32 +1442,34 @@ document.getElementById('hotelAddrInput').addEventListener('change', async (e) =
 
 /* ---------- 위시리스트 ---------- */
 function renderWishes() {
-  const wrap = document.getElementById('wishWrap');
+  const wrap = document.getElementById('wishGroups');
+
   if (state.wishes.length === 0) {
-    wrap.innerHTML = '<div class="empty-hint">아직 담긴 게 없어요. 사고 싶은 거, 먹고 싶은 거 먼저 적어두세요.</div>';
+    wrap.innerHTML = '<div class="wish-empty">아직 담긴 게 없어요. 사고 싶은 거, 먹고 싶은 거 먼저 적어두세요.</div>';
     return;
   }
 
-  wrap.innerHTML = state.wishes.map(w => {
-    const catOptions = CATEGORIES.map(c => `<option value="${c.id}" ${c.id === (w.category || 'sight') ? 'selected' : ''}>${c.icon}</option>`).join('');
-    return `
-      <div class="wish-row" data-wish-id="${w.id}">
-        <select class="wish-cat" data-field="category">${catOptions}</select>
-        <input class="wish-text" type="text" placeholder="예: 디즈니랜드, 샤오롱바오" value="${escapeAttr(w.text || '')}" data-field="text">
+  wrap.innerHTML = CATEGORIES.map(cat => {
+    const items = state.wishes.filter(w => (w.category || 'sight') === cat.id);
+    if (items.length === 0) return '';
+    const rows = items.map(w => `
+      <div class="wish-item-row">
+        <span class="wi-dot"></span>
+        <span class="wi-text">${escapeAttr(w.text || '')}</span>
         <button class="wish-del" data-del-wish="${w.id}">✕</button>
+      </div>
+    `).join('');
+    return `
+      <div class="wish-group">
+        <div class="wish-group-head">
+          <span class="wg-icon">${cat.icon}</span>
+          <span>${cat.label}</span>
+          <span class="wg-count">${items.length}개</span>
+        </div>
+        ${rows}
       </div>
     `;
   }).join('');
-
-  wrap.querySelectorAll('.wish-row input, .wish-row select').forEach(input => {
-    input.addEventListener('change', async (e) => {
-      const row = e.target.closest('.wish-row');
-      const w = state.wishes.find(x => x.id === row.dataset.wishId);
-      if (!w) return;
-      w[e.target.dataset.field] = e.target.value;
-      await saveState();
-    });
-  });
 
   wrap.querySelectorAll('[data-del-wish]').forEach(btn => {
     btn.addEventListener('click', async () => {
@@ -1384,10 +1480,44 @@ function renderWishes() {
   });
 }
 
-document.getElementById('addWishBtn').addEventListener('click', async () => {
-  state.wishes.push({ id: uid(), text: '', category: 'sight' });
+/* 위시리스트 추가용 바텀시트 */
+let wishFormCategory = 'sight';
+
+function openWishForm() {
+  const pillsWrap = document.getElementById('wishCatPills');
+  pillsWrap.innerHTML = CATEGORIES.map(c => `
+    <button type="button" class="wish-cat-pill ${c.id === wishFormCategory ? 'selected' : ''}" data-cat="${c.id}">${c.icon} ${c.label}</button>
+  `).join('');
+  pillsWrap.querySelectorAll('.wish-cat-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      wishFormCategory = pill.dataset.cat;
+      pillsWrap.querySelectorAll('.wish-cat-pill').forEach(p => p.classList.toggle('selected', p.dataset.cat === wishFormCategory));
+    });
+  });
+  document.getElementById('wishFormInput').value = '';
+  document.getElementById('wishFormBackdrop').classList.add('open');
+  setTimeout(() => document.getElementById('wishFormInput').focus(), 100);
+}
+
+function closeWishForm() {
+  document.getElementById('wishFormBackdrop').classList.remove('open');
+}
+
+document.getElementById('addWishBtn').addEventListener('click', openWishForm);
+document.getElementById('wishFormCancel').addEventListener('click', closeWishForm);
+document.getElementById('wishFormBackdrop').addEventListener('click', (e) => {
+  if (e.target.id === 'wishFormBackdrop') closeWishForm();
+});
+document.getElementById('wishFormInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('wishFormSubmit').click();
+});
+document.getElementById('wishFormSubmit').addEventListener('click', async () => {
+  const text = document.getElementById('wishFormInput').value.trim();
+  if (!text) { closeWishForm(); return; }
+  state.wishes.push({ id: uid(), text, category: wishFormCategory });
   await saveState();
   renderWishes();
+  closeWishForm();
 });
 
 /* ---------- 짐싸기 ---------- */
@@ -1454,6 +1584,86 @@ function registerServiceWorker() {
   }
 }
 
+/* ---------- 상하이 날씨 (Open-Meteo, API 키 불필요) ---------- */
+const WEATHER_CODE_MAP = {
+  0: ['☀️', '맑음'], 1: ['🌤️', '대체로 맑음'], 2: ['⛅', '구름 조금'], 3: ['☁️', '흐림'],
+  45: ['🌫️', '안개'], 48: ['🌫️', '짙은 안개'],
+  51: ['🌦️', '이슬비'], 53: ['🌦️', '이슬비'], 55: ['🌦️', '강한 이슬비'],
+  61: ['🌧️', '약한 비'], 63: ['🌧️', '비'], 65: ['🌧️', '강한 비'],
+  71: ['🌨️', '약한 눈'], 73: ['🌨️', '눈'], 75: ['❄️', '강한 눈'],
+  80: ['🌦️', '소나기'], 81: ['🌧️', '소나기'], 82: ['⛈️', '강한 소나기'],
+  95: ['⛈️', '뇌우'], 96: ['⛈️', '우박 동반 뇌우'], 99: ['⛈️', '강한 뇌우'],
+};
+
+async function loadWeather() {
+  const card = document.getElementById('weatherCard');
+  try {
+    const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=31.2304&longitude=121.4737&current=temperature_2m,apparent_temperature,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FShanghai');
+    if (!res.ok) throw new Error('weather fetch failed');
+    const data = await res.json();
+    const code = data.current.weather_code;
+    const [emoji, desc] = WEATHER_CODE_MAP[code] || ['🌡️', '정보 없음'];
+    const temp = Math.round(data.current.temperature_2m);
+    const feels = Math.round(data.current.apparent_temperature);
+    const hi = Math.round(data.daily.temperature_2m_max[0]);
+    const lo = Math.round(data.daily.temperature_2m_min[0]);
+
+    card.innerHTML = `
+      <div class="w-title">🌤️ 상하이 날씨</div>
+      <div class="w-main">
+        <div class="w-emoji">${emoji}</div>
+        <div>
+          <div class="w-temp">${temp}°</div>
+          <div class="w-desc">${desc} · 체감 ${feels}°</div>
+        </div>
+      </div>
+      <div class="w-range">오늘 최고 ${hi}° / 최저 ${lo}°</div>
+    `;
+  } catch (e) {
+    card.innerHTML = `
+      <div class="w-title">🌤️ 상하이 날씨</div>
+      <div class="w-loading">날씨 정보를 불러오지 못했어요</div>
+    `;
+  }
+}
+
+/* ---------- 환율 계산기 (open.er-api.com, API 키 불필요) ---------- */
+let cnyToKrwRate = null;
+
+async function loadExchangeRate() {
+  const rateText = document.getElementById('fxRateText');
+  try {
+    const res = await fetch('https://open.er-api.com/v6/latest/CNY');
+    if (!res.ok) throw new Error('fx fetch failed');
+    const data = await res.json();
+    cnyToKrwRate = data.rates && data.rates.KRW;
+    if (!cnyToKrwRate) throw new Error('no KRW rate');
+    rateText.textContent = `1위안 ≈ ${cnyToKrwRate.toFixed(1)}원`;
+  } catch (e) {
+    cnyToKrwRate = 190; // 대략값 fallback
+    rateText.textContent = `1위안 ≈ 약 ${cnyToKrwRate}원 (오프라인 추정치)`;
+  }
+}
+
+function setupFxCalculator() {
+  const cnyInput = document.getElementById('fxCny');
+  const krwInput = document.getElementById('fxKrw');
+
+  cnyInput.addEventListener('input', () => {
+    if (!cnyToKrwRate) return;
+    const cny = parseFloat(cnyInput.value);
+    if (isNaN(cny)) { krwInput.value = ''; return; }
+    krwInput.value = Math.round(cny * cnyToKrwRate);
+  });
+
+  krwInput.addEventListener('input', () => {
+    if (!cnyToKrwRate) return;
+    const krw = parseFloat(krwInput.value);
+    if (isNaN(krw)) { cnyInput.value = ''; return; }
+    cnyInput.value = (krw / cnyToKrwRate).toFixed(2);
+  });
+}
+
 function renderAll() {
   renderRoles();
   renderGroups();
@@ -1472,6 +1682,8 @@ function renderAll() {
   renderAll();
   subscribeRealtime();
   registerServiceWorker();
+  loadWeather();
+  loadExchangeRate().then(setupFxCalculator);
 })();
 </script>
 
